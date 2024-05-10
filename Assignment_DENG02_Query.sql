@@ -1,58 +1,69 @@
---Query 1 Identify the top 3 products with the highest average rating, considering only products with more than 5 reviews.
-SELECT p.product_name, AVG(pr.rating) AS avg_rating
-FROM products p
-INNER JOIN (
-    SELECT product_id
-    FROM product_reviews
-    GROUP BY product_id
-    HAVING COUNT(review_id) > 5
-) AS reviewed_products ON p.product_id = reviewed_products.product_id
-INNER JOIN product_reviews pr ON p.product_id = pr.product_id
-GROUP BY p.product_name
-ORDER BY avg_rating DESC
-LIMIT 3;
--- EXPLANATION : Identifies the top 3 products with the highest average rating, considering only products with more than 5 reviews.
+--Query 1 Find the percentage of total revenue contributed by each equipment category:
+SELECT 
+    ec.category_name, 
+    SUM(te.equipment_price * te.quantity) / 
+        (SELECT SUM(te.equipment_price * te.quantity) 
+        FROM table_equipment te) * 100 AS revenue_percentage
+FROM 
+    table_equipment te
+INNER JOIN 
+    equipment_category ec ON te.category_id = ec.category_id
+GROUP BY 
+    ec.category_name;
 
---Query 2 List the top 5 best-selling products by total quantity sold.
-SELECT p.product_name, SUM(oi.quantity) AS total_quantity_sold
-FROM products p
-INNER JOIN order_items oi ON p.product_id = oi.product_id
-GROUP BY p.product_name
-ORDER BY total_quantity_sold DESC
-LIMIT 5;
--- EXPLANATION : Lists the top 5 best-selling products by total quantity sold.
+--Query 2 Finding the average rating of games released in each year, with their names, sorted by their average rating
+SELECT 
+    g.game_title,
+    EXTRACT(YEAR FROM g.release_date) AS release_year,
+    AVG(CAST(r.review_rating AS FLOAT)) AS average_rating
+FROM 
+    game g
+LEFT JOIN 
+    review r ON g.review_id = r.review_id
+GROUP BY 
+    g.game_title, release_year
+ORDER BY 
+    average_rating DESC;
 
---Query 3 List the top 3 most purchased products in each product category.
-SELECT category, product_name, total_quantity_sold
-FROM (
-    SELECT p.category, p.product_name, SUM(oi.quantity) AS total_quantity_sold,
-           ROW_NUMBER() OVER (PARTITION BY p.category ORDER BY SUM(oi.quantity) DESC) AS rank
-    FROM products p
-    INNER JOIN order_items oi ON p.product_id = oi.product_id
-    GROUP BY p.category, p.product_name
-) AS ranked_products
-WHERE rank <= 3;
--- EXPLANATION : Lists the top 3 most purchased products in each product category.
+--Query 3 Find the minimum ,average and maximum price of equipment in each category:
+SELECT 
+    ec.category_name, 
+    MIN(te.equipment_price) AS min_price,
+	ROUND(AVG(te.equipment_price), 2) AS average_price,
+    MAX(te.equipment_price) AS max_price
+FROM 
+    table_equipment te
+INNER JOIN 
+    equipment_category ec ON te.category_id = ec.category_id
+GROUP BY 
+    ec.category_name;
 
---Query 4 Calculate the percentage of orders that contain products with an average rating above 4.5.
-SELECT (COUNT(CASE WHEN avg_rating > 4.5 THEN order_id END) / COUNT(order_id)) * 100 AS high_rating_percentage
-FROM (
-    SELECT oi.order_id, 
-           AVG(pr.rating) AS avg_rating
-    FROM order_items oi
-    INNER JOIN product_reviews pr ON oi.product_id = pr.product_id
-    GROUP BY oi.order_id
-) AS order_ratings;
--- EXPLANATION : Calculates the percentage of orders that contain products with an average rating above 4.5.
+--Query 4 Find the total number of games available on each platform and sort in descending:
+SELECT 
+    p.platform_name, 
+    COUNT(*) AS total_games
+FROM 
+    game g
+INNER JOIN 
+    platform p ON g.platform_id = p.platform_id
+GROUP BY 
+    p.platform_name
+ORDER BY 
+    total_games DESC;
 
---Query 5 List the top 3 countries with the highest average order value.
-SELECT c.country, AVG(o.total_price) AS avg_order_value
-FROM orders o
-INNER JOIN customers c ON o.customer_id = c.customer_id
-GROUP BY c.country
-ORDER BY avg_order_value DESC
-LIMIT 3;
--- EXPLANATION :  Lists the top 3 countries with the highest average order value.
+--Query 5 List all games along with the number of reviews they have received and the average review rating, sorted by average rating in descending order:
+SELECT 
+    g.game_title, 
+    COUNT(r.review_id) AS total_reviews, 
+    AVG(CAST(r.review_rating AS FLOAT)) AS average_rating
+FROM 
+    game g
+LEFT JOIN 
+    review r ON g.review_id = r.review_id
+GROUP BY 
+    g.game_title
+ORDER BY 
+    average_rating DESC;
 
 --Query 6
 
