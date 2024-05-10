@@ -112,6 +112,8 @@ DROP TABLE orders;
 DROP TABLE store_transaction;
 DROP TABLE game;
 DROP TABLE table_equipment;
+DROP TABLE rating;
+DROP TABLE equipment_category;
 
 -- Alter table
 ALTER TABLE employee ADD CONSTRAINT fk_employee_store FOREIGN KEY (store_id) REFERENCES store(store_id);
