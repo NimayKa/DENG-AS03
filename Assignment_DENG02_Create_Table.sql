@@ -53,8 +53,8 @@ CREATE TABLE orders (
   order_id VARCHAR(15) PRIMARY KEY,
   customer_id VARCHAR(15), 
   order_date DATE NOT NULL,
-  game_id VARCHAR(15) NOT NULL,
-  equipment_id VARCHAR(15) NOT NULL
+  game_id VARCHAR(15),
+  equipment_id VARCHAR(15) 
 );
 
 -- Create transaction table
@@ -116,6 +116,7 @@ DROP TABLE store;
 DROP TABLE rating;
 DROP TABLE equipment_category;
 
+
 -- Alter table
 ALTER TABLE employee ADD CONSTRAINT fk_employee_store FOREIGN KEY (store_id) REFERENCES store(store_id);
 ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
@@ -131,6 +132,7 @@ ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_platform FOREIGN KEY (pl
 ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_review FOREIGN KEY (review_id) REFERENCES review(review_id);
 ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_category FOREIGN KEY (category_id) REFERENCES equipment_category(category_id);
 ALTER TABLE customer ADD CONSTRAINT fk_customer_review FOREIGN KEY (review_id) REFERENCES review(review_id);
+
 
 ---------- INSERTING DATA ---------- 
 INSERT INTO genre (genre_id, genre_name)
@@ -412,7 +414,7 @@ VALUES
 
 
 -- Insert 50 rows into the orders table with IDs starting from OR0001
-INSERT INTO orders (order_id, customer_id, order_date, price_total)
+INSERT INTO orders (order_id, customer_id, order_date, game_id, equipment_id)
 VALUES
   ('OR00001', 'C00001', '2024-04-28', 100.50),
   ('OR00002', 'C00002', '2024-04-27', 75.25),
