@@ -53,7 +53,8 @@ CREATE TABLE orders (
   order_id VARCHAR(15) PRIMARY KEY,
   customer_id VARCHAR(15), 
   order_date DATE NOT NULL,
-  price_total DECIMAL(10,2) NOT NULL
+  game_id VARCHAR(15) NOT NULL,
+  equipment_id VARCHAR(15) NOT NULL
 );
 
 -- Create transaction table
@@ -118,6 +119,8 @@ DROP TABLE equipment_category;
 -- Alter table
 ALTER TABLE employee ADD CONSTRAINT fk_employee_store FOREIGN KEY (store_id) REFERENCES store(store_id);
 ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
+ALTER TABLE orders ADD CONSTRAINT fk_orders_game FOREIGN KEY (game_id) REFERENCES game(game_id);
+ALTER TABLE orders ADD CONSTRAINT fk_orders_game FOREIGN KEY (equipment_id) REFERENCES table_equipment(equipment_id);
 ALTER TABLE store_transaction ADD CONSTRAINT fk_transaction_employee FOREIGN KEY (employee_id) REFERENCES employee(employee_id);
 ALTER TABLE store_transaction ADD CONSTRAINT fk_transaction_order FOREIGN KEY (order_id) REFERENCES orders(order_id);
 ALTER TABLE game ADD CONSTRAINT fk_game_genre FOREIGN KEY (genre_id) REFERENCES genre(genre_id);
