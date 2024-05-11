@@ -11,6 +11,7 @@ INNER JOIN
 GROUP BY 
     ec.category_name;
 
+
 --Query 2 Finding the average rating of games released in each year, with their names, sorted by their average rating
 SELECT 
     g.game_title,
@@ -25,6 +26,7 @@ GROUP BY
 ORDER BY 
     average_rating DESC;
 
+
 --Query 3 Find the minimum ,average and maximum price of equipment in each category:
 SELECT 
     ec.category_name, 
@@ -38,6 +40,7 @@ INNER JOIN
 GROUP BY 
     ec.category_name;
 
+
 --Query 4 Find the total number of games available on each platform and sort in descending:
 SELECT 
     p.platform_name, 
@@ -50,6 +53,7 @@ GROUP BY
     p.platform_name
 ORDER BY 
     total_games DESC;
+
 
 --Query 5 List all games along with the number of reviews they have received and the average review rating, sorted by average rating in descending order:
 SELECT 
@@ -65,23 +69,43 @@ GROUP BY
 ORDER BY 
     average_rating DESC;
 
---Query 6
 
---Query 7
+--Query 6 Find the number of products (games and equipment) on sale according to genre along with the average price of each genre
 
---Query 8
 
---Query 9
 
---Query 10
+--Query 7 Find the number of sales according to the month of a specific year (to be picked) withe famous product bought for that month?
+
+
+
+--Query 8 Something pasal Manufacturer of each store 
+
+
+
+--Query 9 Number of produced products each year ...
+
+
+
+--Query 10 
+
+
 
 --Query 11
 
+
+
 --Query 12
+
+
 
 --Query 13
 
+
+
 --Query 14
 
+
+
 --Query 15
+
 
