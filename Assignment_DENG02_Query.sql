@@ -1,9 +1,9 @@
---Query 1 Find the percentage of total revenue contributed by each equipment category:
+--Query 1 Find the percentage of total revenue contributed by each equipment category and round it to 2 decimal places:
 SELECT 
     ec.category_name, 
-    SUM(te.equipment_price * te.quantity) / 
+    ROUND(SUM(te.equipment_price * te.quantity) / 
         (SELECT SUM(te.equipment_price * te.quantity) 
-        FROM table_equipment te) * 100 AS revenue_percentage
+        FROM table_equipment te) * 100, 2) AS revenue_percentage
 FROM 
     table_equipment te
 INNER JOIN 
