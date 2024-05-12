@@ -1,3 +1,14 @@
+-- Create table_equipment table
+CREATE TABLE table_equipment (
+  equipment_id VARCHAR(15) PRIMARY KEY,
+  equipment_name VARCHAR(255) NOT NULL,
+  platform_id VARCHAR(15), 
+  equipment_price DECIMAL(10,2) NOT NULL,
+  quantity INTEGER NOT NULL,
+  review_id VARCHAR(15),
+  category_id VARCHAR(15)NOT NULL
+);
+
 -- Create platform table
 CREATE TABLE platform (
   platform_id VARCHAR(15) PRIMARY KEY,
@@ -12,28 +23,15 @@ CREATE TABLE genre (
   genre_name VARCHAR(255) NOT NULL
 );
 
--- Create review table
-CREATE TABLE review (
-  review_id VARCHAR(15) PRIMARY KEY,
-  review_rating VARCHAR(255),
-  review_comment VARCHAR (255)
-);
-
--- Create store table
-CREATE TABLE store (
-  store_id VARCHAR(15) PRIMARY KEY,
-  store_location VARCHAR(255) NOT NULL,
-  store_country VARCHAR(255) NOT NULL
-);
-
--- Create employee table
-CREATE TABLE employee (
-  employee_id VARCHAR(15) PRIMARY KEY,
-  first_name VARCHAR(255) NOT NULL,
-  last_name VARCHAR(255) NOT NULL,
-  date_of_employment DATE NOT NULL,
-  date_of_birth DATE,
-  store_id VARCHAR(15)
+-- Create game table
+CREATE TABLE game (
+  game_id VARCHAR(15) PRIMARY KEY,
+  game_title VARCHAR(255) NOT NULL,
+  genre_id VARCHAR(15), 
+  release_date DATE,
+  platform_id VARCHAR(15),
+  rating_id VARCHAR(15),
+  review_id VARCHAR(15)
 );
 
 -- Create customer table
@@ -50,7 +48,7 @@ CREATE TABLE customer (
 
 -- Create orders table
 CREATE TABLE orders (
-  order_id VARCHAR(15) PRIMARY KEY,
+  order_id VARCHAR(15)NOT NULL,
   customer_id VARCHAR(15), 
   order_date DATE NOT NULL,
   game_id VARCHAR(15),
@@ -66,26 +64,28 @@ CREATE TABLE store_transaction (
   order_id VARCHAR(15) 
 );
 
--- Create game table
-CREATE TABLE game (
-  game_id VARCHAR(15) PRIMARY KEY,
-  game_title VARCHAR(255) NOT NULL,
-  genre_id VARCHAR(15), 
-  release_date DATE,
-  platform_id VARCHAR(15),
-  rating_id VARCHAR(15),
-  review_id VARCHAR(15)
+-- Create employee table
+CREATE TABLE employee (
+  employee_id VARCHAR(15) PRIMARY KEY,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  date_of_employment DATE NOT NULL,
+  date_of_birth DATE,
+  store_id VARCHAR(15)
 );
 
--- Create table_equipment table
-CREATE TABLE table_equipment (
-  equipment_id VARCHAR(15) PRIMARY KEY,
-  equipment_name VARCHAR(255) NOT NULL,
-  platform_id VARCHAR(15), 
-  equipment_price DECIMAL(10,2) NOT NULL,
-  quantity INTEGER NOT NULL,
-  review_id VARCHAR(15),
-  category_id VARCHAR(15)NOT NULL
+-- Create store table
+CREATE TABLE store (
+  store_id VARCHAR(15) PRIMARY KEY,
+  store_location VARCHAR(255) NOT NULL,
+  store_country VARCHAR(255) NOT NULL
+);
+
+-- Create review table
+CREATE TABLE review (
+  review_id VARCHAR(15) PRIMARY KEY,
+  review_rating VARCHAR(255),
+  review_comment VARCHAR (255)
 );
 
 -- Create equipment_category table
@@ -101,6 +101,20 @@ CREATE TABLE rating (
 	rating_description VARCHAR(255) NOT NULL
 );
 
+-- Alter table
+ALTER TABLE employee ADD CONSTRAINT fk_employee_store FOREIGN KEY (store_id) REFERENCES store(store_id);
+ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
+ALTER TABLE orders ADD CONSTRAINT fk_orders_game FOREIGN KEY (game_id) REFERENCES game(game_id);
+ALTER TABLE orders ADD CONSTRAINT fk_orders_equipment FOREIGN KEY (equipment_id) REFERENCES table_equipment(equipment_id);
+ALTER TABLE store_transaction ADD CONSTRAINT fk_transaction_employee FOREIGN KEY (employee_id) REFERENCES employee(employee_id);
+ALTER TABLE game ADD CONSTRAINT fk_game_genre FOREIGN KEY (genre_id) REFERENCES genre(genre_id);
+ALTER TABLE game ADD CONSTRAINT fk_game_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
+ALTER TABLE game ADD CONSTRAINT fk_game_review FOREIGN KEY (review_id) REFERENCES review(review_id);
+ALTER TABLE game ADD CONSTRAINT fk_game_rating FOREIGN KEY (rating_id) REFERENCES rating(rating_id);
+ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
+ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_review FOREIGN KEY (review_id) REFERENCES review(review_id);
+ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_category FOREIGN KEY (category_id) REFERENCES equipment_category(category_id);
+ALTER TABLE customer ADD CONSTRAINT fk_customer_review FOREIGN KEY (review_id) REFERENCES review(review_id);
 
 -- Dropping Table
 DROP TABLE table_equipment;
@@ -115,24 +129,6 @@ DROP TABLE employee;
 DROP TABLE store;
 DROP TABLE rating;
 DROP TABLE equipment_category;
-
-
--- Alter table
-ALTER TABLE employee ADD CONSTRAINT fk_employee_store FOREIGN KEY (store_id) REFERENCES store(store_id);
-ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
-ALTER TABLE orders ADD CONSTRAINT fk_orders_game FOREIGN KEY (game_id) REFERENCES game(game_id);
-ALTER TABLE orders ADD CONSTRAINT fk_orders_game FOREIGN KEY (equipment_id) REFERENCES table_equipment(equipment_id);
-ALTER TABLE store_transaction ADD CONSTRAINT fk_transaction_employee FOREIGN KEY (employee_id) REFERENCES employee(employee_id);
-ALTER TABLE store_transaction ADD CONSTRAINT fk_transaction_order FOREIGN KEY (order_id) REFERENCES orders(order_id);
-ALTER TABLE game ADD CONSTRAINT fk_game_genre FOREIGN KEY (genre_id) REFERENCES genre(genre_id);
-ALTER TABLE game ADD CONSTRAINT fk_game_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
-ALTER TABLE game ADD CONSTRAINT fk_game_review FOREIGN KEY (review_id) REFERENCES review(review_id);
-ALTER TABLE game ADD CONSTRAINT fk_game_rating FOREIGN KEY (rating_id) REFERENCES rating(rating_id);
-ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
-ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_review FOREIGN KEY (review_id) REFERENCES review(review_id);
-ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_category FOREIGN KEY (category_id) REFERENCES equipment_category(category_id);
-ALTER TABLE customer ADD CONSTRAINT fk_customer_review FOREIGN KEY (review_id) REFERENCES review(review_id);
-
 
 ---------- INSERTING DATA ---------- 
 INSERT INTO genre (genre_id, genre_name)
@@ -412,116 +408,6 @@ VALUES
   ('E00049', 'Eleanor', 'Gupta', '2023-11-09', '1983-02-28', 'S00049'),
   ('E00050', 'Henry', 'Jiang', '2024-03-30', '1991-07-07', 'S00050');
 
-
--- Insert 50 rows into the orders table with IDs starting from OR0001
-INSERT INTO orders (order_id, customer_id, order_date, game_id, equipment_id)
-VALUES
-  ('OR00001', 'C00001', '2024-04-28', 100.50),
-  ('OR00002', 'C00002', '2024-04-27', 75.25),
-  ('OR00003', 'C00003', '2024-04-26', 150.75),
-  ('OR00004', 'C00004', '2024-04-25', 120.00),
-  ('OR00005', 'C00005', '2024-04-24', 85.50),
-  ('OR00006', 'C00006', '2024-04-23', 200.25),
-  ('OR00007', 'C00007', '2024-04-22', 75.00),
-  ('OR00008', 'C00008', '2024-04-21', 180.75),
-  ('OR00009', 'C00009', '2024-04-20', 90.25),
-  ('OR00010', 'C00010', '2024-04-19', 150.00),
-  ('OR00011', 'C00011', '2024-04-18', 110.50),
-  ('OR00012', 'C00012', '2024-04-17', 95.75),
-  ('OR00013', 'C00013', '2024-04-16', 130.25),
-  ('OR00014', 'C00014', '2024-04-15', 70.00),
-  ('OR00015', 'C00015', '2024-04-14', 145.50),
-  ('OR00016', 'C00016', '2024-04-13', 115.25),
-  ('OR00017', 'C00017', '2024-04-12', 180.00),
-  ('OR00018', 'C00018', '2024-04-11', 200.75),
-  ('OR00019', 'C00019', '2024-04-10', 90.25),
-  ('OR00020', 'C00020', '2024-04-09', 170.00),
-  ('OR00021', 'C00021', '2024-04-08', 100.50),
-  ('OR00022', 'C00022', '2024-04-07', 125.75),
-  ('OR00023', 'C00023', '2024-04-06', 95.25),
-  ('OR00024', 'C00024', '2024-04-05', 140.00),
-  ('OR00025', 'C00025', '2024-04-04', 75.50),
-  ('OR00026', 'C00026', '2024-04-03', 160.25),
-  ('OR00027', 'C00027', '2024-04-02', 115.00),
-  ('OR00028', 'C00028', '2024-04-01', 185.75),
-  ('OR00029', 'C00029', '2024-03-31', 95.25),
-  ('OR00030', 'C00030', '2024-03-30', 130.00),
-  ('OR00031', 'C00031', '2024-03-29', 125.50),
-  ('OR00032', 'C00032', '2024-03-28', 90.25),
-  ('OR00033', 'C00033', '2024-03-27', 150.00),
-  ('OR00034', 'C00034', '2024-03-26', 115.75),
-  ('OR00035', 'C00035', '2024-03-25', 170.00),
-  ('OR00036', 'C00036', '2024-03-24', 100.50),
-  ('OR00037', 'C00037', '2024-03-23', 135.75),
-  ('OR00038', 'C00038', '2024-03-22', 85.25),
-  ('OR00039', 'C00039', '2024-03-21', 120.00),
-  ('OR00040', 'C00040', '2024-03-20', 65.50),
-  ('OR00041', 'C00041', '2024-03-19', 140.25),
-  ('OR00042', 'C00042', '2024-03-18', 80.00),
-  ('OR00043', 'C00043', '2024-03-17', 155.75),
-  ('OR00044', 'C00044', '2024-03-16', 95.25),
-  ('OR00045', 'C00045', '2024-03-15', 130.00),
-  ('OR00046', 'C00046', '2024-03-14', 75.50),
-  ('OR00047', 'C00047', '2024-03-13', 145.25),
-  ('OR00048', 'C00048', '2024-03-12', 100.00),
-  ('OR00049', 'C00049', '2024-03-11', 170.75),
-  ('OR00050', 'C00050', '2024-03-10', 80.25);
-
-
-INSERT INTO store_transaction(transaction_id, type_of_payment, date_of_transaction, employee_id, order_id)
-VALUES
-('T00001', 'Credit Card', '2024-01-01', 'E00001', 'OR00001'),
-('T00002', 'Cash', '2024-01-02', 'E00002', 'OR00002'),
-('T00003', 'Debit Card', '2024-01-03', 'E00003', 'OR00003'),
-('T00004', 'Credit Card', '2024-01-04', 'E00004', 'OR00004'),
-('T00005', 'Cash', '2024-01-05', 'E00005', 'OR00005'),
-('T00006', 'Debit Card', '2024-01-06', 'E00006', 'OR00006'),
-('T00007', 'Credit Card', '2024-01-07', 'E00007', 'OR00007'),
-('T00008', 'Cash', '2024-01-08', 'E00008', 'OR00008'),
-('T00009', 'Debit Card', '2024-01-09', 'E00009', 'OR00009'),
-('T00010', 'Credit Card', '2024-01-10', 'E00010', 'OR00010'),
-('T00011', 'Cash', '2024-01-11', 'E00011', 'OR00011'),
-('T00012', 'Debit Card', '2024-01-12', 'E00012', 'OR00012'),
-('T00013', 'Credit Card', '2024-01-13', 'E00013', 'OR00013'),
-('T00014', 'Cash', '2024-01-14', 'E00014', 'OR00014'),
-('T00015', 'Debit Card', '2024-01-15', 'E00015', 'OR00015'),
-('T00016', 'Credit Card', '2024-01-16', 'E00016', 'OR00016'),
-('T00017', 'Cash', '2024-01-17', 'E00017', 'OR00017'),
-('T00018', 'Debit Card', '2024-01-18', 'E00018', 'OR00018'),
-('T00019', 'Credit Card', '2024-01-19', 'E00019', 'OR00019'),
-('T00020', 'Cash', '2024-01-20', 'E00020', 'OR00020'),
-('T00021', 'Debit Card', '2024-01-21', 'E00021', 'OR00021'),
-('T00022', 'Credit Card', '2024-01-22', 'E00022', 'OR00022'),
-('T00023', 'Cash', '2024-01-23', 'E00023', 'OR00023'),
-('T00024', 'Debit Card', '2024-01-24', 'E00024', 'OR00024'),
-('T00025', 'Credit Card', '2024-01-25', 'E00025', 'OR00025'),
-('T00026', 'Cash', '2024-01-26', 'E00026', 'OR00026'),
-('T00027', 'Debit Card', '2024-01-27', 'E00027', 'OR00027'),
-('T00028', 'Credit Card', '2024-01-28', 'E00028', 'OR00028'),
-('T00029', 'Cash', '2024-01-29', 'E00029', 'OR00029'),
-('T00030', 'Debit Card', '2024-01-30', 'E00030', 'OR00030'),
-('T00031', 'Credit Card', '2024-01-31', 'E00031', 'OR00031'),
-('T00032', 'Cash', '2024-02-01', 'E00032', 'OR00032'),
-('T00033', 'Debit Card', '2024-02-02', 'E00033', 'OR00033'),
-('T00034', 'Credit Card', '2024-02-03', 'E00034', 'OR00034'),
-('T00035', 'Cash', '2024-02-04', 'E00035', 'OR00035'),
-('T00036', 'Debit Card', '2024-02-05', 'E00036', 'OR00036'),
-('T00037', 'Credit Card', '2024-02-06', 'E00037', 'OR00037'),
-('T00038', 'Cash', '2024-02-07', 'E00038', 'OR00038'),
-('T00039', 'Debit Card', '2024-02-08', 'E00039', 'OR00039'),
-('T00040', 'Credit Card', '2024-02-09', 'E00040', 'OR00040'),
-('T00041', 'Cash', '2024-02-10', 'E00041', 'OR00041'),
-('T00042', 'Debit Card', '2024-02-11', 'E00042', 'OR00042'),
-('T00043', 'Credit Card', '2024-02-12', 'E00043', 'OR00043'),
-('T00044', 'Cash', '2024-02-13', 'E00044', 'OR00044'),
-('T00045', 'Debit Card', '2024-02-14', 'E00045', 'OR00045'),
-('T00046', 'Credit Card', '2024-02-15', 'E00046', 'OR00046'),
-('T00047', 'Cash', '2024-02-16', 'E00047', 'OR00047'),
-('T00048', 'Debit Card', '2024-02-17', 'E00048', 'OR00048'),
-('T00049', 'Credit Card', '2024-02-18', 'E00049', 'OR00049'),
-('T00050', 'Cash', '2024-02-19', 'E00050', 'OR00050');
-
-
 INSERT INTO game(game_id, game_title, genre_id, release_date, platform_id, rating_id, review_id)
 VALUES
 ('GA00001', 'Space Adventure', 'GE00001', '1980-07-15', 'P00001', 'RI0001', 'R00001'),
@@ -628,6 +514,162 @@ VALUES
 ('EQ00048', 'Samsung T5 Portable SSD 500GB', 'P00008', 109.99, 70, 'R00008', 'C00006'),
 ('EQ00049', 'Kingston A400 SSD 480GB', 'P00009', 54.99, 60, 'R00009', 'C00006'),
 ('EQ00050', 'Crucial MX500 1TB SSD', 'P00010', 99.99, 75, 'R00010', 'C00006');
+
+INSERT INTO orders (order_id, customer_id, order_date, game_id, equipment_id)
+VALUES
+  ('OR00001', 'C00001', '2024-03-12', 'GA00001', 'EQ00001'),
+  ('OR00002', 'C00002', '2024-02-25', 'GA00002', 'EQ00002'),
+  ('OR00003', 'C00003', '2024-01-19', 'GA00003', 'EQ00003'),
+  ('OR00004', 'C00004', '2024-04-05', 'GA00004', 'EQ00004'),
+  ('OR00005', 'C00005', '2024-03-10', 'GA00005', 'EQ00005'),
+  ('OR00006', 'C00006', '2024-02-15', 'GA00006', 'EQ00006'),
+  ('OR00007', 'C00007', '2024-05-01', 'GA00007', 'EQ00007'),
+  ('OR00008', 'C00008', '2024-04-18', 'GA00008', 'EQ00008'),
+  ('OR00009', 'C00009', '2024-01-28', 'GA00009', 'EQ00009'),
+  ('OR00010', 'C00010', '2024-02-10', 'GA00010', 'EQ00010'),
+  ('OR00011', 'C00011', '2024-04-03', 'GA00011', 'EQ00011'),
+  ('OR00012', 'C00012', '2024-03-21', 'GA00012', 'EQ00012'),
+  ('OR00013', 'C00013', '2024-01-14', 'GA00013', 'EQ00013'),
+  ('OR00014', 'C00014', '2024-02-08', 'GA00014', 'EQ00014'),
+  ('OR00015', 'C00015', '2024-05-07', 'GA00015', 'EQ00015'),
+  ('OR00016', 'C00016', '2024-04-11', 'GA00016', 'EQ00016'),
+  ('OR00017', 'C00017', '2024-01-23', 'GA00017', 'EQ00017'),
+  ('OR00018', 'C00018', '2024-02-29', 'GA00018', 'EQ00018'),
+  ('OR00019', 'C00019', '2024-03-05', 'GA00019', 'EQ00019'),
+  ('OR00020', 'C00020', '2024-04-26', 'GA00020', 'EQ00020'),
+  ('OR00021', 'C00021', '2024-05-09', 'GA00021', 'EQ00021'),
+  ('OR00022', 'C00022', '2024-02-02', 'GA00022', 'EQ00022'),
+  ('OR00023', 'C00023', '2024-03-27', 'GA00023', 'EQ00023'),
+  ('OR00024', 'C00024', '2024-04-14', 'GA00024', 'EQ00024'),
+  ('OR00025', 'C00025', '2024-01-31', 'GA00025', 'EQ00025'),
+  ('OR00026', 'C00026', '2024-05-04', 'GA00026', 'EQ00026'),
+  ('OR00027', 'C00027', '2024-02-18', 'GA00027', 'EQ00027'),
+  ('OR00028', 'C00028', '2024-03-12', 'GA00028', 'EQ00028'),
+  ('OR00029', 'C00029', '2024-04-05', 'GA00029', 'EQ00029'),
+  ('OR00030', 'C00030', '2024-01-08', 'GA00030', 'EQ00030'),
+  ('OR00031', 'C00031', '2024-05-01', 'GA00031', 'EQ00031'),
+  ('OR00032', 'C00032', '2024-02-23', 'GA00032', 'EQ00032'),
+  ('OR00033', 'C00033', '2024-04-18', 'GA00033', 'EQ00033'),
+  ('OR00034', 'C00034', '2024-01-15', 'GA00034', 'EQ00034'),
+  ('OR00035', 'C00035', '2024-03-09', 'GA00035', 'EQ00035'),
+  ('OR00036', 'C00036', '2024-04-02', 'GA00036', 'EQ00036'),
+  ('OR00037', 'C00037', '2024-01-25', 'GA00037', 'EQ00037'),
+  ('OR00038', 'C00038', '2024-02-19', 'GA00038', 'EQ00038'),
+  ('OR00039', 'C00039', '2024-03-14', 'GA00039', 'EQ00039'),
+  ('OR00040', 'C00040', '2024-05-07', 'GA00040', 'EQ00040'),
+  ('OR00041', 'C00041', '2024-02-10', 'GA00041', 'EQ00041'),
+  ('OR00042', 'C00042', '2024-03-03', 'GA00042', 'EQ00042'),
+  ('OR00043', 'C00043', '2024-04-27', 'GA00043', 'EQ00043'),
+  ('OR00044', 'C00044', '2024-01-21', 'GA00044', 'EQ00044'),
+  ('OR00045', 'C00045', '2024-05-14', 'GA00045', 'EQ00045'),
+  ('OR00046', 'C00046', '2024-02-12', 'GA00046', 'EQ00046'),
+  ('OR00047', 'C00047', '2024-03-06', 'GA00047', 'EQ00047'),
+  ('OR00048', 'C00048', '2024-04-30', 'GA00048', 'EQ00048'),
+  ('OR00049', 'C00049', '2024-01-17', 'GA00049', 'EQ00049'),
+  ('OR00050', 'C00050', '2024-02-20', 'GA00050', 'EQ00050'),
+  ('OR00001', 'C00001', '2024-03-12', 'GA00001', NULL),
+  ('OR00002', 'C00002', '2024-02-25', 'GA00002', 'EQ00002'),
+  ('OR00003', 'C00003', '2024-01-19', NULL, 'EQ00003'),
+  ('OR00004', 'C00004', '2024-04-05', 'GA00004', NULL),
+  ('OR00005', 'C00005', '2024-03-10', 'GA00005', 'EQ00005'),
+  ('OR00006', 'C00006', '2024-02-15', NULL, 'EQ00006'),
+  ('OR00007', 'C00007', '2024-05-01', 'GA00007', NULL),
+  ('OR00008', 'C00008', '2024-04-18', 'GA00008', 'EQ00008'),
+  ('OR00009', 'C00009', '2024-01-28', NULL, 'EQ00009'),
+  ('OR00010', 'C00010', '2024-02-10', 'GA00010', NULL),
+  ('OR00011', 'C00011', '2024-04-03', NULL, 'EQ00011'),
+  ('OR00012', 'C00012', '2024-03-21', 'GA00012', 'EQ00012'),
+  ('OR00013', 'C00013', '2024-01-14', 'GA00013', NULL),
+  ('OR00014', 'C00014', '2024-02-08', NULL, 'EQ00014'),
+  ('OR00015', 'C00015', '2024-05-07', 'GA00015', NULL),
+  ('OR00016', 'C00016', '2024-04-11', 'GA00016', 'EQ00016'),
+  ('OR00017', 'C00017', '2024-01-23', 'GA00017', NULL),
+  ('OR00018', 'C00018', '2024-02-29', NULL, 'EQ00018'),
+  ('OR00019', 'C00019', '2024-03-05', 'GA00019', NULL),
+  ('OR00020', 'C00020', '2024-04-26', NULL, 'EQ00020'),
+  ('OR00021', 'C00021', '2024-05-09', 'GA00021', NULL),
+  ('OR00022', 'C00022', '2024-02-02', 'GA00022', 'EQ00022'),
+  ('OR00023', 'C00023', '2024-03-27', NULL, 'EQ00023'),
+  ('OR00024', 'C00024', '2024-04-14', 'GA00024', NULL),
+  ('OR00025', 'C00025', '2024-01-31', 'GA00025', 'EQ00025'),
+  ('OR00026', 'C00026', '2024-05-04', NULL, 'EQ00026'),
+  ('OR00027', 'C00027', '2024-02-18', 'GA00027', NULL),
+  ('OR00028', 'C00028', '2024-03-12', NULL, 'EQ00028'),
+  ('OR00029', 'C00029', '2024-04-05', 'GA00029', NULL),
+  ('OR00030', 'C00030', '2024-01-08', NULL, 'EQ00030'),
+  ('OR00031', 'C00031', '2024-05-01', 'GA00031', NULL),
+  ('OR00032', 'C00032', '2024-02-23', 'GA00032', 'EQ00032'),
+  ('OR00033', 'C00033', '2024-04-18', NULL, 'EQ00033'),
+  ('OR00034', 'C00034', '2024-01-15', 'GA00034', NULL),
+  ('OR00035', 'C00035', '2024-03-09', NULL, 'EQ00035'),
+  ('OR00036', 'C00036', '2024-04-02', 'GA00036', NULL),
+  ('OR00037', 'C00037', '2024-01-25', 'GA00037', 'EQ00037'),
+  ('OR00038', 'C00038', '2024-02-19', NULL, 'EQ00038'),
+  ('OR00039', 'C00039', '2024-03-14', 'GA00039', NULL),
+  ('OR00040', 'C00040', '2024-05-07', NULL, 'EQ00040'),
+  ('OR00041', 'C00041', '2024-02-10', 'GA00041', NULL),
+  ('OR00042', 'C00042', '2024-03-03', NULL, 'EQ00042'),
+  ('OR00043', 'C00043', '2024-04-27', 'GA00043', NULL),
+  ('OR00044', 'C00044', '2024-01-21', 'GA00044', 'EQ00044'),
+  ('OR00045', 'C00045', '2024-05-14', NULL, 'EQ00045'),
+  ('OR00046', 'C00046', '2024-02-12', 'GA00046', NULL),
+  ('OR00047', 'C00047', '2024-03-06', NULL, 'EQ00047'),
+  ('OR00048', 'C00048', '2024-04-30', 'GA00048', NULL),
+  ('OR00049', 'C00049', '2024-01-17', NULL, 'EQ00049'),
+  ('OR00050', 'C00050', '2024-02-20', 'GA00050', NULL);
+
+INSERT INTO store_transaction(transaction_id, type_of_payment, date_of_transaction, employee_id, order_id)
+VALUES
+('T00001', 'Credit Card', '2024-01-01', 'E00001', 'OR00001'),
+('T00002', 'Cash', '2024-01-02', 'E00002', 'OR00002'),
+('T00003', 'Debit Card', '2024-01-03', 'E00003', 'OR00003'),
+('T00004', 'Credit Card', '2024-01-04', 'E00004', 'OR00004'),
+('T00005', 'Cash', '2024-01-05', 'E00005', 'OR00005'),
+('T00006', 'Debit Card', '2024-01-06', 'E00006', 'OR00006'),
+('T00007', 'Credit Card', '2024-01-07', 'E00007', 'OR00007'),
+('T00008', 'Cash', '2024-01-08', 'E00008', 'OR00008'),
+('T00009', 'Debit Card', '2024-01-09', 'E00009', 'OR00009'),
+('T00010', 'Credit Card', '2024-01-10', 'E00010', 'OR00010'),
+('T00011', 'Cash', '2024-01-11', 'E00011', 'OR00011'),
+('T00012', 'Debit Card', '2024-01-12', 'E00012', 'OR00012'),
+('T00013', 'Credit Card', '2024-01-13', 'E00013', 'OR00013'),
+('T00014', 'Cash', '2024-01-14', 'E00014', 'OR00014'),
+('T00015', 'Debit Card', '2024-01-15', 'E00015', 'OR00015'),
+('T00016', 'Credit Card', '2024-01-16', 'E00016', 'OR00016'),
+('T00017', 'Cash', '2024-01-17', 'E00017', 'OR00017'),
+('T00018', 'Debit Card', '2024-01-18', 'E00018', 'OR00018'),
+('T00019', 'Credit Card', '2024-01-19', 'E00019', 'OR00019'),
+('T00020', 'Cash', '2024-01-20', 'E00020', 'OR00020'),
+('T00021', 'Debit Card', '2024-01-21', 'E00021', 'OR00021'),
+('T00022', 'Credit Card', '2024-01-22', 'E00022', 'OR00022'),
+('T00023', 'Cash', '2024-01-23', 'E00023', 'OR00023'),
+('T00024', 'Debit Card', '2024-01-24', 'E00024', 'OR00024'),
+('T00025', 'Credit Card', '2024-01-25', 'E00025', 'OR00025'),
+('T00026', 'Cash', '2024-01-26', 'E00026', 'OR00026'),
+('T00027', 'Debit Card', '2024-01-27', 'E00027', 'OR00027'),
+('T00028', 'Credit Card', '2024-01-28', 'E00028', 'OR00028'),
+('T00029', 'Cash', '2024-01-29', 'E00029', 'OR00029'),
+('T00030', 'Debit Card', '2024-01-30', 'E00030', 'OR00030'),
+('T00031', 'Credit Card', '2024-01-31', 'E00031', 'OR00031'),
+('T00032', 'Cash', '2024-02-01', 'E00032', 'OR00032'),
+('T00033', 'Debit Card', '2024-02-02', 'E00033', 'OR00033'),
+('T00034', 'Credit Card', '2024-02-03', 'E00034', 'OR00034'),
+('T00035', 'Cash', '2024-02-04', 'E00035', 'OR00035'),
+('T00036', 'Debit Card', '2024-02-05', 'E00036', 'OR00036'),
+('T00037', 'Credit Card', '2024-02-06', 'E00037', 'OR00037'),
+('T00038', 'Cash', '2024-02-07', 'E00038', 'OR00038'),
+('T00039', 'Debit Card', '2024-02-08', 'E00039', 'OR00039'),
+('T00040', 'Credit Card', '2024-02-09', 'E00040', 'OR00040'),
+('T00041', 'Cash', '2024-02-10', 'E00041', 'OR00041'),
+('T00042', 'Debit Card', '2024-02-11', 'E00042', 'OR00042'),
+('T00043', 'Credit Card', '2024-02-12', 'E00043', 'OR00043'),
+('T00044', 'Cash', '2024-02-13', 'E00044', 'OR00044'),
+('T00045', 'Debit Card', '2024-02-14', 'E00045', 'OR00045'),
+('T00046', 'Credit Card', '2024-02-15', 'E00046', 'OR00046'),
+('T00047', 'Cash', '2024-02-16', 'E00047', 'OR00047'),
+('T00048', 'Debit Card', '2024-02-17', 'E00048', 'OR00048'),
+('T00049', 'Credit Card', '2024-02-18', 'E00049', 'OR00049'),
+('T00050', 'Cash', '2024-02-19', 'E00050', 'OR00050');
 
 SELECT * FROM store;
 SELECT * FROM employee;
