@@ -27,6 +27,7 @@ CREATE TABLE genre (
 CREATE TABLE game (
   game_id VARCHAR(15) PRIMARY KEY,
   game_title VARCHAR(255) NOT NULL,
+  game_price DECIMAL(10,2) NOT NULL,
   genre_id VARCHAR(15), 
   release_date DATE,
   platform_id VARCHAR(15),
