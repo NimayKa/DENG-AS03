@@ -118,11 +118,6 @@ ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_category FOREIGN KEY (ca
 ALTER TABLE customer ADD CONSTRAINT fk_customer_review FOREIGN KEY (review_id) REFERENCES review(review_id);
 
 -- Dropping Table
-DROP TABLE table_equipment;
-DROP TABLE game;
-DROP TABLE store_transaction;
-DROP TABLE orders;
-DROP TABLE customer;
 DROP TABLE review;
 DROP TABLE genre;
 DROP TABLE platform;
@@ -130,6 +125,11 @@ DROP TABLE employee;
 DROP TABLE store;
 DROP TABLE rating;
 DROP TABLE equipment_category;
+DROP TABLE table_equipment;
+DROP TABLE game;
+DROP TABLE store_transaction;
+DROP TABLE customer;
+DROP TABLE orders;
 
 ---------- INSERTING DATA ---------- 
 INSERT INTO genre (genre_id, genre_name)
