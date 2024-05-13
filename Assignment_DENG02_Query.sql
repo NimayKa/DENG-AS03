@@ -70,7 +70,7 @@ ORDER BY
     average_rating DESC;
 
 
---Query 6 Find the number of products (games and equipment) on sale according to genre along with the average price of each genre
+--Query 6 Average price of each category but displaying all equipments
 SELECT
 	e.equipment_name,
 	c.category_id,
@@ -84,21 +84,76 @@ ORDER BY
 	c.category_id;
 
 
---Query 7 Find the number of sales according to the month of a specific year (to be picked) withe famous product bought for that month?
-SELECT * FROM store_transaction; 
-SELECT * FROM orders;
+--Query 7 Finding the months that has the highest to lowest sales
+
+SELECT
+	EXTRACT(MONTH FROM o.order_date) AS month,
+	MAX(COALESCE(g.game_price, 0) +
+	    	COALESCE(e.equipment_price, 0)) AS maximum_sale
+FROM
+	orders o
+INNER JOIN store_transaction t
+	ON t.order_id = o.order_id
+INNER JOIN game g
+	ON g.game_id = o.game_id
+INNER JOIN table_equipment e
+	ON e.equipment_id = o.equipment_id
+GROUP BY
+	month
+ORDER BY
+	maximum_sale DESC;
 
 
---Query 8 Something pasal Manufacturer of each store 
+--Query 8 Finding the number of products sold from different manufacturers with its most expensive product from game and equipment each
+SELECT
+	p.manufacturer,
+	COUNT(DISTINCT g.game_id) +
+		COUNT(DISTINCT e.equipment_id) AS total_products,
+	MAX(e.equipment_price) AS highest_game_price,
+	MAX(g.game_price) AS highest_equipment_price
+FROM
+	platform p
+INNER JOIN game g
+	ON g.platform_id = p.platform_id
+INNER JOIN table_equipment e
+	ON e.platform_id = p.platform_id
+GROUP BY
+	p.manufacturer;
 
 
+--Query 9 Ranking games according to their genre in terms of price
+SELECT
+	g.game_title,
+	ge.genre_name,
+	g.game_price,
+	RANK() OVER
+		(PARTITION BY ge.genre_name
+		 ORDER BY
+			g.game_price)
+FROM
+	genre ge
+INNER JOIN game g
+	ON g.genre_id = ge.genre_id;
+	
 
---Query 9 Number of produced products each year ...
-
-
-
---Query 10 
-
+--Query 10 Average number of sales for each country
+SELECT
+	s.store_country,
+	ROUND(AVG(g.game_price), 2) AS average_sale
+FROM
+	store s
+JOIN employee e
+	ON e.store_id = s.store_id
+JOIN store_transaction t
+	ON t.employee_id = e.employee_id
+JOIN orders o
+	ON o.order_id = t.order_id
+JOIN game g
+	ON g.game_id = o.game_id
+GROUP BY
+	s.store_country
+ORDER BY
+	average_sale;
 
 
 --Query 11 Find The highest amount spend by each customer
