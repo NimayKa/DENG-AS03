@@ -354,8 +354,6 @@ VALUES
   ('C00049', 'Leah', 'Griffin', '1982-08-18', '789 Orange St, City, Country', '+5566778899', 'leah@example.com', NULL),
   ('C00050', 'Eli', 'Ward', '1995-01-21', '901 Kiwi St, City, Country', '+9988776655', 'eli@example.com', NULL);
 
-
--- Insert 50 rows into the employee table with IDs starting from E0001
 INSERT INTO employee (employee_id, first_name, last_name, date_of_employment, date_of_birth, store_id)
 VALUES
   ('E00001', 'John', 'Doe', '2023-01-15', '1990-05-10', 'S00001'),
@@ -454,8 +452,8 @@ VALUES
 ('GA00041', 'Global Racing', 49.99, 'GE00002', '2011-06-13', 'P00009', 'RI00002', 'R00001'),
 ('GA00042', 'Orbital Station', 39.99, 'GE00005', '2012-09-22', 'P00009', 'RI00003', 'R00002'),
 ('GA00043', 'Ancient Ruins', 29.99, 'GE00001', '2014-02-18', 'P00010', 'RI00001', 'R00003'),
-('GA00044', 'Thunderstorm Racers', 54.99, 'GE00002', '2016-04-30', 'P000010', 'RI0004', 'R00004'),
-('GA00045', 'Neptune Exploration', 19.99, 'GE00006', '2018-11-29', 'P000011', 'RI0002', 'R00005'),
+('GA00044', 'Thunderstorm Racers', 54.99, 'GE00002', '2016-04-30', 'P00010', 'RI00004', 'R00004'),
+('GA00045', 'Neptune Exploration', 19.99, 'GE00006', '2018-11-29', 'P00011', 'RI00002', 'R00005'),
 ('GA00046', 'Zombie City', 24.99, 'GE00004', '2020-10-05', 'P00011', 'RI00003', 'R00006'),
 ('GA00047', 'Royal Knights', 34.99, 'GE00001', '2022-01-16', 'P00012', 'RI00001', 'R00007'),
 ('GA00048', 'Storm Pilots', 39.99, 'GE00005', '2023-08-23', 'P00012', 'RI00002', 'R00008'),
