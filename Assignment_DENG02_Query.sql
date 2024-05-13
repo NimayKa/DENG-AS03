@@ -100,21 +100,47 @@ GROUP BY
 
 
 
---Query 10 
 
+--Query 10 Find The highest amount spend by each customer
+SELECT c.customer_id, c.first_name, c.last_name, 
+       SUM(COALESCE(e.equipment_price, 0) + COALESCE(g.game_price, 0)) AS total_price
+FROM customer c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+LEFT JOIN table_equipment e ON o.equipment_id = e.equipment_id
+LEFT JOIN game g ON o.game_id = g.game_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY total_price DESC;
 
+--Query 11 Count transaction by each employee
+SELECT 
+    e.employee_id,
+    e.first_name,
+    e.last_name,
+    COUNT(st.type_of_payment) AS total_profit
+FROM 
+    employee e
+LEFT JOIN 
+    store_transaction st ON e.employee_id = st.employee_id
+GROUP BY 
+    e.employee_id, e.first_name, e.last_name
+ORDER BY 
+    total_profit DESC;
 
---Query 11
-
-
-
---Query 12
-
-
-
---Query 13
-
-
+--Query 12 The top 5 games with the highest average rating and the number of reviews
+SELECT 
+    g.game_id,
+    g.game_title,
+    AVG(CAST(r.review_rating AS DECIMAL(10,2))) AS avg_rating,
+    COUNT(r.review_id) AS num_reviews
+FROM 
+    game g
+LEFT JOIN 
+    review r ON g.review_id = r.review_id
+GROUP BY 
+    g.game_id
+ORDER BY 
+    avg_rating DESC
+LIMIT 5;
 
 --Query 14
 
