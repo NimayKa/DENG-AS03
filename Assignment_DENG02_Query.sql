@@ -72,19 +72,21 @@ ORDER BY
 
 --Query 6 Find the number of products (games and equipment) on sale according to genre along with the average price of each genre
 SELECT
+	e.equipment_name,
 	c.category_id,
-	COUNT(e.equipment_id) AS number_of_equipments,
-	ROUND(AVG(e.equipment_price), 2) AS average_price
+	ROUND(AVG(e.equipment_price) OVER
+		  	(PARTITION BY c.category_id), 2) AS average_price
 FROM
 	table_equipment e
-JOIN equipment_category c
+INNER JOIN equipment_category c
 	ON c.category_id = e.category_id
-GROUP BY
+ORDER BY
 	c.category_id;
 
 
 --Query 7 Find the number of sales according to the month of a specific year (to be picked) withe famous product bought for that month?
-
+SELECT * FROM store_transaction; 
+SELECT * FROM orders;
 
 
 --Query 8 Something pasal Manufacturer of each store 
@@ -102,7 +104,7 @@ GROUP BY
 --Query 11 Find The highest amount spend by each customer
 SELECT 
 	c.customer_id, 
-	c.first_name, 
+	c.first_name,
 	c.last_name, 
     SUM(COALESCE(e.equipment_price, 0) + 
 		COALESCE(g.game_price, 0)) AS total_price
