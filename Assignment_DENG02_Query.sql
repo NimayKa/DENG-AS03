@@ -71,7 +71,21 @@ ORDER BY
 
 
 --Query 6 Find the number of products (games and equipment) on sale according to genre along with the average price of each genre
+SELECT * FROM genre;
+SELECT * FROM game;
+SELECT * FROM table_equipment;
+SELECT * FROM equipment_category;
 
+SELECT
+	c.category_id,
+	COUNT(e.equipment_id) AS number_of_equipments,
+	ROUND(AVG(e.equipment_price), 2) AS average_price
+FROM
+	table_equipment e
+JOIN equipment_category c
+	ON c.category_id = e.category_id
+GROUP BY
+	c.category_id;
 
 
 --Query 7 Find the number of sales according to the month of a specific year (to be picked) withe famous product bought for that month?
