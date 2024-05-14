@@ -100,7 +100,7 @@ SELECT
 		 WHEN EXTRACT(MONTH FROM o.order_date) = 5
 		 	THEN 'May'
 		 END AS month_name,
-	MAX(COALESCE(g.game_price, 0) +
+	SUM(COALESCE(g.game_price, 0) +
 	    	COALESCE(e.equipment_price, 0)) AS maximum_sale
 FROM
 	orders o
