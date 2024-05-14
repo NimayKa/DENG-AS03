@@ -1,4 +1,4 @@
---Query 1 Find the percentage of total revenue contributed by each equipment category and which category provides the most revenue (round it to 2 decimal places):
+--Query 1 --Query 1 Find the percentage of total revenue contributed by each equipment category and which category provides the most revenue (round it to 2 decimal places):
 SELECT 
     ec.category_name, 
     ROUND(SUM(e.equipment_price * e.quantity) / 
