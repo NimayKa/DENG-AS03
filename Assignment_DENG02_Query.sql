@@ -123,10 +123,10 @@ SELECT
 	p.manufacturer,
 	COUNT(DISTINCT g.game_id) +
 		COUNT(DISTINCT e.equipment_id) AS total_products,
-	MAX(e.equipment_price) AS highest_game_price,
-	MIN(e.equipment_price) AS lowest_game_price,
-	MAX(g.game_price) AS highest_equipment_price,
-	MIN(g.game_price) AS lowest_equipment_price
+	MAX(e.equipment_price) AS highest_equipment_price,
+	MIN(e.equipment_price) AS lowest_equipment_price,
+	MAX(g.game_price) AS highest_game_price,
+	MIN(g.game_price) AS lowest_game_price
 FROM
 	platform p
 JOIN game g
