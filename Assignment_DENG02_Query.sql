@@ -1,13 +1,13 @@
 --Query 1 Find the percentage of total revenue contributed by each equipment category and round it to 2 decimal places:
 SELECT 
     ec.category_name, 
-    ROUND(SUM(te.equipment_price * te.quantity) / 
-        (SELECT SUM(te.equipment_price * te.quantity) 
-        FROM table_equipment te) * 100, 2) AS revenue_percentage
+    ROUND(SUM(e.equipment_price * e.quantity) / 
+        (SELECT SUM(e.equipment_price * e.quantity) 
+        FROM equipment e) * 100, 2) AS revenue_percentage
 FROM 
-    table_equipment te
+    equipment e
 INNER JOIN 
-    equipment_category ec ON te.category_id = ec.category_id
+    equipment_category ec ON e.category_id = ec.category_id
 GROUP BY 
     ec.category_name;
 
@@ -30,13 +30,13 @@ ORDER BY
 --Query 3 Find the minimum ,average and maximum price of equipment in each category:
 SELECT 
     ec.category_name, 
-    MIN(te.equipment_price) AS min_price,
-	ROUND(AVG(te.equipment_price), 2) AS average_price,
-    MAX(te.equipment_price) AS max_price
+    MIN(e.equipment_price) AS min_price,
+	ROUND(AVG(e.equipment_price), 2) AS average_price,
+    MAX(e.equipment_price) AS max_price
 FROM 
-    table_equipment te
+    equipment e
 INNER JOIN 
-    equipment_category ec ON te.category_id = ec.category_id
+    equipment_category ec ON e.category_id = ec.category_id
 GROUP BY 
     ec.category_name;
 
@@ -77,7 +77,7 @@ SELECT
 	ROUND(AVG(e.equipment_price) OVER
 		  	(PARTITION BY c.category_id), 2) AS average_price
 FROM
-	table_equipment e
+	equipment e
 INNER JOIN equipment_category c
 	ON c.category_id = e.category_id
 ORDER BY
@@ -96,7 +96,7 @@ INNER JOIN store_transaction t
 	ON t.order_id = o.order_id
 INNER JOIN game g
 	ON g.game_id = o.game_id
-INNER JOIN table_equipment e
+INNER JOIN equipment e
 	ON e.equipment_id = o.equipment_id
 GROUP BY
 	month
@@ -115,7 +115,7 @@ FROM
 	platform p
 INNER JOIN game g
 	ON g.platform_id = p.platform_id
-INNER JOIN table_equipment e
+INNER JOIN equipment e
 	ON e.platform_id = p.platform_id
 GROUP BY
 	p.manufacturer;
@@ -168,7 +168,7 @@ FROM
 LEFT JOIN orders o 
 	ON c.customer_id = o.customer_id
 LEFT JOIN 
-	table_equipment e ON o.equipment_id = e.equipment_id
+	equipment e ON o.equipment_id = e.equipment_id
 LEFT JOIN 
 	game g ON o.game_id = g.game_id
 GROUP BY 
@@ -212,10 +212,55 @@ ORDER BY
 LIMIT 5;
 
 
---Query 14
+--Query 14 List Customers Who Bought Games of a Specific Genre and Provide Their Order Details
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    o.order_id,
+    g.game_title,
+    g.release_date,
+    ec.category_name AS equipment_category,
+    e.equipment_name,
+    e.equipment_price,
+    (COALESCE(g.game_price, 0) + COALESCE(e.equipment_price, 0)) AS total_amount_spent
+FROM 
+    customer c
+JOIN 
+    orders o ON c.customer_id = o.customer_id
+LEFT JOIN 
+    game g ON o.game_id = g.game_id
+LEFT JOIN 
+    genre ge ON g.genre_id = ge.genre_id
+LEFT JOIN 
+    equipment e ON o.equipment_id = e.equipment_id
+LEFT JOIN 
+    equipment_category ec ON e.category_id = ec.category_id
+WHERE 
+    ge.genre_name = 'Action'
+ORDER BY 
+    c.customer_id, o.order_id;
 
 
-
---Query 15
+--Query 15 Customer Purchase History with Detailed Order Information
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    o.order_id,
+    o.order_date,
+    g.game_title,
+    e.equipment_name,
+    COALESCE(g.game_price, 0) + COALESCE(e.equipment_price, 0) AS total_amount
+FROM 
+    customer c
+JOIN 
+    orders o ON c.customer_id = o.customer_id
+LEFT JOIN 
+    game g ON o.game_id = g.game_id
+LEFT JOIN 
+    equipment e ON o.equipment_id = e.equipment_id
+ORDER BY 
+    c.customer_id, o.order_date;
 
 

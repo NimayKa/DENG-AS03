@@ -1,5 +1,5 @@
--- Create table_equipment table
-CREATE TABLE table_equipment (
+-- Create equipment table
+CREATE TABLE equipment (
   equipment_id VARCHAR(15) PRIMARY KEY,
   equipment_name VARCHAR(255) NOT NULL,
   platform_id VARCHAR(15), 
@@ -105,15 +105,15 @@ CREATE TABLE rating (
 ALTER TABLE employee ADD CONSTRAINT fk_employee_store FOREIGN KEY (store_id) REFERENCES store(store_id);
 ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customer(customer_id);
 ALTER TABLE orders ADD CONSTRAINT fk_orders_game FOREIGN KEY (game_id) REFERENCES game(game_id);
-ALTER TABLE orders ADD CONSTRAINT fk_orders_equipment FOREIGN KEY (equipment_id) REFERENCES table_equipment(equipment_id);
+ALTER TABLE orders ADD CONSTRAINT fk_orders_equipment FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id);
 ALTER TABLE store_transaction ADD CONSTRAINT fk_transaction_employee FOREIGN KEY (employee_id) REFERENCES employee(employee_id);
 ALTER TABLE game ADD CONSTRAINT fk_game_genre FOREIGN KEY (genre_id) REFERENCES genre(genre_id);
 ALTER TABLE game ADD CONSTRAINT fk_game_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
 ALTER TABLE game ADD CONSTRAINT fk_game_review FOREIGN KEY (review_id) REFERENCES review(review_id);
 ALTER TABLE game ADD CONSTRAINT fk_game_rating FOREIGN KEY (rating_id) REFERENCES rating(rating_id);
-ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
-ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_review FOREIGN KEY (review_id) REFERENCES review(review_id);
-ALTER TABLE table_equipment ADD CONSTRAINT fk_equipment_category FOREIGN KEY (category_id) REFERENCES equipment_category(category_id);
+ALTER TABLE equipment ADD CONSTRAINT fk_equipment_platform FOREIGN KEY (platform_id) REFERENCES platform(platform_id);
+ALTER TABLE equipment ADD CONSTRAINT fk_equipment_review FOREIGN KEY (review_id) REFERENCES review(review_id);
+ALTER TABLE equipment ADD CONSTRAINT fk_equipment_category FOREIGN KEY (category_id) REFERENCES equipment_category(category_id);
 ALTER TABLE customer ADD CONSTRAINT fk_customer_review FOREIGN KEY (review_id) REFERENCES review(review_id);
 
 -- Dropping Table
@@ -124,7 +124,7 @@ DROP TABLE employee;
 DROP TABLE store;
 DROP TABLE rating;
 DROP TABLE equipment_category;
-DROP TABLE table_equipment;
+DROP TABLE equipment;
 DROP TABLE game;
 DROP TABLE store_transaction;
 DROP TABLE customer;
@@ -460,7 +460,7 @@ VALUES
 ('GA00050', 'Planet Explorer', 59.99, 'GE00006', '2024-04-29', 'P00012', 'RI00001', 'R00010');
 
 
-INSERT INTO table_equipment(equipment_id, equipment_name, platform_id, equipment_price, quantity, review_id, category_id)
+INSERT INTO equipment(equipment_id, equipment_name, platform_id, equipment_price, quantity, review_id, category_id)
 VALUES
 ('EQ00001', 'Xbox One Controller', 'P00001', 49.99, 150, 'R00001', 'C00001'),
 ('EQ00002', 'PS4 Wireless Controller', 'P00002', 59.99, 120, 'R00002', 'C00001'),
@@ -678,6 +678,6 @@ SELECT * FROM customer;
 SELECT * FROM orders;
 SELECT * FROM store_transaction;
 SELECT * FROM game;
-SELECT * FROM table_equipment;
+SELECT * FROM equipment;
 SELECT * FROM rating;
 SELECT * FROM equipment_category;
