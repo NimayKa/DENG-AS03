@@ -78,7 +78,7 @@ SELECT
 		  	(PARTITION BY c.category_id), 2) AS average_price
 FROM
 	equipment e
-INNER JOIN equipment_category c
+RIGHT JOIN equipment_category c
 	ON c.category_id = e.category_id
 ORDER BY
 	c.category_id;
@@ -87,35 +87,49 @@ ORDER BY
 --Query 7 Finding the months that has the highest to lowest sales
 
 SELECT
-	EXTRACT(MONTH FROM o.order_date) AS month,
+	EXTRACT(MONTH FROM o.order_date) AS month_number,
+	CASE 
+		WHEN EXTRACT(MONTH FROM o.order_date) = 1
+			THEN 'January'
+		 WHEN EXTRACT(MONTH FROM o.order_date) = 2
+			THEN 'February'
+		 WHEN EXTRACT(MONTH FROM o.order_date) = 3
+			THEN 'March'
+	 	 WHEN EXTRACT(MONTH FROM o.order_date) = 4
+			THEN 'April'
+		 WHEN EXTRACT(MONTH FROM o.order_date) = 5
+		 	THEN 'May'
+		 END AS month_name,
 	MAX(COALESCE(g.game_price, 0) +
 	    	COALESCE(e.equipment_price, 0)) AS maximum_sale
 FROM
 	orders o
-INNER JOIN store_transaction t
+JOIN store_transaction t
 	ON t.order_id = o.order_id
-INNER JOIN game g
+JOIN game g
 	ON g.game_id = o.game_id
-INNER JOIN equipment e
+JOIN equipment e
 	ON e.equipment_id = o.equipment_id
 GROUP BY
-	month
+	month_number
 ORDER BY
 	maximum_sale DESC;
 
 
---Query 8 Finding the number of products sold from different manufacturers with its most expensive product from game and equipment each
+--Query 8 Finding the number of products sold from different manufacturers with its most expensive and cheapest product price from game and equipment each
 SELECT
 	p.manufacturer,
 	COUNT(DISTINCT g.game_id) +
 		COUNT(DISTINCT e.equipment_id) AS total_products,
 	MAX(e.equipment_price) AS highest_game_price,
-	MAX(g.game_price) AS highest_equipment_price
+	MIN(e.equipment_price) AS lowest_game_price,
+	MAX(g.game_price) AS highest_equipment_price,
+	MIN(g.game_price) AS lowest_equipment_price
 FROM
 	platform p
-INNER JOIN game g
+JOIN game g
 	ON g.platform_id = p.platform_id
-INNER JOIN equipment e
+JOIN equipment e
 	ON e.platform_id = p.platform_id
 GROUP BY
 	p.manufacturer;
@@ -132,11 +146,11 @@ SELECT
 			g.game_price)
 FROM
 	genre ge
-INNER JOIN game g
+JOIN game g
 	ON g.genre_id = ge.genre_id;
 	
 
---Query 10 Average number of sales for each country
+--Query 10 Current average number of sales for each country
 SELECT
 	s.store_country,
 	ROUND(AVG(g.game_price), 2) AS average_sale
