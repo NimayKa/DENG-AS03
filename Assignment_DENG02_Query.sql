@@ -103,7 +103,7 @@ SELECT
 		 	THEN 'May'
 		 END AS month_name,
 	SUM(COALESCE(g.game_price, 0) +
-	    	COALESCE(e.equipment_price, 0)) AS maximum_sale
+	    	COALESCE(e.equipment_price, 0)) AS total_sale
 FROM
 	orders o
 JOIN store_transaction t
@@ -115,7 +115,7 @@ JOIN equipment e
 GROUP BY
 	month_number
 ORDER BY
-	maximum_sale DESC;
+	total_sale DESC;
 
 
 --Query 8 Finding the number of products sold from different manufacturers with its most expensive and cheapest product price from game and equipment each
