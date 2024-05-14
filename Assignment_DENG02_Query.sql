@@ -78,7 +78,7 @@ SELECT
 		  	(PARTITION BY c.category_id), 2) AS average_price
 FROM
 	equipment e
-RIGHT JOIN equipment_category c
+JOIN equipment_category c
 	ON c.category_id = e.category_id
 ORDER BY
 	c.category_id;
