@@ -1,4 +1,4 @@
---Query 1 Find the percentage of total revenue contributed by each equipment category and round it to 2 decimal places:
+--Query 1 --Query 1 Find the percentage of total revenue contributed by each equipment category and which category provides the most revenue (round it to 2 decimal places):
 SELECT 
     ec.category_name, 
     ROUND(SUM(e.equipment_price * e.quantity) / 
@@ -9,7 +9,9 @@ FROM
 INNER JOIN 
     equipment_category ec ON e.category_id = ec.category_id
 GROUP BY 
-    ec.category_name;
+    ec.category_name
+ORDER BY 
+	revenue_percentage DESC;
 
 
 --Query 2 Finding the average rating of games released in each year, with their names, sorted by their average rating
@@ -78,7 +80,7 @@ SELECT
 		  	(PARTITION BY c.category_id), 2) AS average_price
 FROM
 	equipment e
-JOIN equipment_category c
+RIGHT JOIN equipment_category c
 	ON c.category_id = e.category_id
 ORDER BY
 	c.category_id;
